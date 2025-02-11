@@ -34,6 +34,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
     - name: Log in to DockerHub
       uses: docker/login-action@v3
       with:
@@ -46,6 +49,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v6
       with:
-          context: ./ProductCatalogAPI
+          context: .
+          file: ./ProductCatalogAPI/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/product-catalog-api:latest
