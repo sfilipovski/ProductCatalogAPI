@@ -21,13 +21,13 @@ jobs:
           dotnet-version: '9.0'
 
     - name: Restore Dependencies
-      run: dotnet restore
+      run: dotnet restore ProductCatalogAPI.sln
 
     - name: Code Formatting Check
-      run: dotnet format --verify-no-changes
+      run: dotnet format ProductCatalogAPI.sln --verify-no-changes
 
     - name: Run Tests
-      run: dotnet test --configuration Release --no-restore --verbosity normal
+      run: dotnet test ProductCatalogAPI.sln --configuration Release --no-restore --verbosity normal
 
   build-and-push:
     needs: code-checks
