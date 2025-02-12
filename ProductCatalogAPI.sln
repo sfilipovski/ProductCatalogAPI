@@ -7,6 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalogAPI", "Produc
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C7EFC19D-90EF-42CD-96E4-293B0D86001F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{514BAFB3-75C3-4936-A44F-CA216F2FB5F7}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Desktop\productcatalogk8s\configmap.yaml = ..\..\..\Desktop\productcatalogk8s\configmap.yaml
+		..\..\..\Desktop\productcatalogk8s\deployment.yaml = ..\..\..\Desktop\productcatalogk8s\deployment.yaml
+		..\..\..\Desktop\productcatalogk8s\secret.yaml = ..\..\..\Desktop\productcatalogk8s\secret.yaml
+		..\..\..\Desktop\productcatalogk8s\service.yaml = ..\..\..\Desktop\productcatalogk8s\service.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

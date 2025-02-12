@@ -29,6 +29,18 @@ var mongoPassword = Environment.GetEnvironmentVariable("DATABASE_PASSWORD");
 
 var mongoConnectionString = $"mongodb://{mongoUsername}:{mongoPassword}@{mongoHost}:{mongoPort}";
 
+if (string.IsNullOrEmpty(mongoHost) || string.IsNullOrEmpty(mongoPort))
+{
+    Console.WriteLine("Empty connectionstring");
+    mongoConnectionString = builder.Configuration.GetValue<string>("MongoDBConnectionString");
+}
+
+if (string.IsNullOrEmpty(mongoDatabaseName))
+{
+    mongoDatabaseName = "product_catalog";
+}
+
+
 var mongoClient = new MongoClient(mongoConnectionString);
 var mongoDatabase = mongoClient.GetDatabase(mongoDatabaseName);
 builder.Services.AddScoped(provider => mongoDatabase);
@@ -56,13 +68,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-        options.RoutePrefix = string.Empty; // Makes Swagger UI available at the root (localhost:8080)
-    });
 }
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    options.RoutePrefix = string.Empty; // Makes Swagger UI available at the root (localhost:8080)
+});
 
 app.UseHttpsRedirection();
 
