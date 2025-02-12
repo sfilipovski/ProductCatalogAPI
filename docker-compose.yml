@@ -6,7 +6,7 @@ networks:
 
 services:
   productcatalogapi:
-    image: ${DOCKER_REGISTRY-}productcatalogapi
+    image: sfilipovski/product-catalog-api:latest
     build:
        context: .
        dockerfile: ProductCatalogAPI/Dockerfile
