@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productcatalog
+  namespace: productcatalog
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: productcatalog
+  template:
+    metadata:
+      labels:
+        app: productcatalog
+    spec:
+      containers:
+      - name: productcatalogapi
+        image: sfilipovski/product-catalog-api
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_HOST
+          valueFrom: 
+            configMapKeyRef:
+              name: mongo-config
+              key: host
+        - name: DATABASE_PORT
+          valueFrom: 
+            configMapKeyRef:
+              name: mongo-config
+              key: port
+        - name: DATABASE_NAME
+          valueFrom: 
+            configMapKeyRef:
+              name: mongo-config
+              key: database
+        - name: DATABASE_USERNAME
+          valueFrom: 
+            secretKeyRef:
+              name: mongo-secret
+              key: username
+        - name: DATABASE_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: mongo-secret
+              key: password
+      - name: mongo
+        image: mongo
+        ports:
+        - containerPort: 27017
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: password
