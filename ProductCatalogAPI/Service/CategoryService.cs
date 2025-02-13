@@ -19,11 +19,11 @@ namespace ProductCatalogAPI.Service
 
         public async Task<bool> AddCategoryAsync(Category category)
         {
-            var existingCategory = (await _categoryRepository.GetAllAsync())
-                                   .FirstOrDefault(c => c.Name.ToLower() == category.Name.ToLower());
-
-            if (existingCategory != null)
-                return false;
+            //var existingCategory = (await _categoryRepository.GetAllAsync())
+            //                       .FirstOrDefault(c => c.Name.ToLower() == category.Name.ToLower());
+            //
+            //if (existingCategory != null)
+            //    return false;
 
             await _categoryRepository.AddAsync(category);
             return true;
