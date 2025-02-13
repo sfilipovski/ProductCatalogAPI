@@ -52,9 +52,7 @@ metadata:
   namespace: productcatalog
 spec:
   selector:
-    app: productcatalog
-  type: LoadBalancer  
+    app: productcatalog 
   ports:
-    - protocol: TCP
-      port: 30000
-      targetPort: 8080
+    - targetPort: 8080
+      port: 8080
