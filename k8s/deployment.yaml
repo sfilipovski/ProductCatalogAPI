@@ -4,7 +4,7 @@ metadata:
   name: productcatalog
   namespace: productcatalog
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: productcatalog
@@ -44,18 +44,17 @@ spec:
             secretKeyRef:
               name: mongo-secret
               key: password
-      - name: mongo
-        image: mongo
-        ports:
-        - containerPort: 27017
-        env:
-        - name: MONGO_INITDB_ROOT_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret
-              key: username
-        - name: MONGO_INITDB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret
-              key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productcatalog-service
+  namespace: productcatalog
+spec:
+  selector:
+    app: productcatalog
+  type: LoadBalancer  
+  ports:
+    - protocol: TCP
+      port: 30000
+      targetPort: 8080
