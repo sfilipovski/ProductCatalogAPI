@@ -30,7 +30,6 @@ jobs:
         run: |
           kubectl apply -f k8s/configmap.yaml
           kubectl apply -f k8s/secret.yaml
-          kubectl create configmap create-db-configmap --from-file=k8s/create_db.js -n productcatalog
           kubectl apply -f kubernetes/mongo.yaml
           kubectl apply -f kubernetes/deployment.yaml
           
