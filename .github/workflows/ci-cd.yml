@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-permissions:
-    id-token: write
-    contents: read
-
 jobs:
 
   code-checks:
@@ -33,7 +29,7 @@ jobs:
     - name: Run Tests
       run: dotnet test ProductCatalogAPI.sln --configuration Release --no-restore --verbosity normal
 
-  docker-build-and-push:
+  docker-build-push:
     needs: code-checks
     runs-on: ubuntu-latest
 
@@ -59,7 +55,7 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/product-catalog-api:latest
 
   deploy-aks:
-    needs: docker-build-and-push
+    needs: docker-build-push
     runs-on: ubuntu-latest
     
     steps:
@@ -94,3 +90,18 @@ jobs:
 
       - name: Get Services
         run: kubectl get svc -n productcatalog
+
+      - name: Add Deployment Status to Summary
+        id: deployment-status
+        run: |
+          # Check the status of the deployment
+          kubectl rollout status deployment/productcatalog-deployment -n productcatalog
+
+          echo "### AKS Deployment Status" >> $GITHUB_STEP_SUMMARY
+          echo "The deployment to AKS was **successful**." >> $GITHUB_STEP_SUMMARY
+          echo "Pods and services have been successfully deployed to AKS." >> $GITHUB_STEP_SUMMARY
+
+      - name: Add Failure Annotation if Deployment Fails
+        if: failure()
+        run: |
+          echo "::error file=deploy-aks::Deployment to AKS failed. Please check the logs for more details." >> $GITHUB_STEP_SUMMARY
