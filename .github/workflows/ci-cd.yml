@@ -59,7 +59,9 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/product-catalog-api:latest
 
   deploy-aks:
+    needs: docker-build-and-push
     runs-on: ubuntu-latest
+    
     steps:
     
       - name: Checkout Repository
