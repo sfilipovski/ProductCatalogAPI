@@ -53,3 +53,40 @@ jobs:
           file: ./ProductCatalogAPI/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/product-catalog-api:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Azure CLI
+      uses: azure/setup-azurecli@v1
+
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+
+    - name: Get AKS credentials
+      run: |
+        az aks get-credentials --resource-group productcatalog-rg --name ASK-productcatalog
+
+    - name: Create namespace if not exists
+      run: kubectl create namespace productcatalog --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Deploy to AKS
+      run: |
+        kubectl apply -f k8s/configmap.yaml
+        kubectl apply -f k8s/secret.yaml
+        kubectl create configmap create-db-configmap --from-file=k8s/create_db.js -n productcatalog
+        kubectl apply -f kubernetes/mongo.yaml
+        kubectl apply -f kubernetes/deployment.yaml
+
+    - name: Get Pods
+      run: kubectl get pods -n productcatalog
