@@ -4,6 +4,6 @@ metadata:
   name: mongo-config
   namespace: productcatalog
 data:
-  host: "mongo"
+  host: "mongodb-service"
   port: "27017"
   database: "product_catalog"
