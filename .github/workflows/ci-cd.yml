@@ -61,11 +61,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
-      
-    - name: Set up Azure CLI
-      uses: azure/cli@v1
-      with:
-        azcliversion: '2.30.0' 
         
     - name: Log in to Azure
       uses: azure/login@v1
