@@ -106,3 +106,16 @@ jobs:
         if: failure()
         run: |
           echo "::error file=deploy-aks::Deployment to AKS failed. Please check the logs for more details." >> $GITHUB_STEP_SUMMARY
+
+      - name: Check if DNS is reachable
+        run: |
+          for i in {1..3}; do
+            if curl -s --head --fail http://productcatalog.westeurope.cloudapp.azure.com/; then
+              echo "DNS is reachable"
+              exit 0
+            fi
+            echo "Waiting for DNS resolution... ($i/3)"
+            sleep 5
+          done
+          echo "DNS is not reachable"
+          exit 1
