@@ -4,11 +4,71 @@ name: Azure login workflow
 
 jobs:
 
-  login:
+  deploy:
     runs-on: ubuntu-latest
     steps:
+    
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+    
       - name: Azure Login
         uses: Azure/login@v2.2.0
         with:
           creds: ${{secrets.AZURE_CREDENTIALS}}
+
+      - name: Set up kubectl
+        uses: Azure/setup-kubectl@v4.0.0
+
+      - name: Get AKS credentials
+        run: |
+         az aks get-credentials --resource-group productcatalog-rg --name AKS-productcatalog
+
+      - name: Create namespace if not exists
+        run: kubectl create namespace productcatalog --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy to AKS
+        run: |
+          kubectl apply -f k8s/configmap.yaml
+          kubectl apply -f k8s/secret.yaml
+          kubectl create configmap create-db-configmap --from-file=k8s/create_db.js -n productcatalog
+          kubectl apply -f kubernetes/mongo.yaml
+          kubectl apply -f kubernetes/deployment.yaml
+          
+      - name: Get Pods
+        run: kubectl get pods -n productcatalog
     
+#  deploy:
+#    needs: build-and-push
+#    runs-on: ubuntu-latest
+
+#    steps:
+#    - name: Checkout Repository
+#      uses: actions/checkout@v4
+        
+#    - name: Azure Login action
+#      uses: azure/login@v1
+#      with:
+#        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+#        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+#        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+#    - name: Set up kubectl
+#      uses: azure/setup-kubectl@v1
+
+#    - name: Get AKS credentials
+#      run: |
+#        az aks get-credentials --resource-group productcatalog-rg --name ASK-productcatalog
+
+#    - name: Create namespace if not exists
+#      run: kubectl create namespace productcatalog --dry-run=client -o yaml | kubectl apply -f -
+
+#    - name: Deploy to AKS
+#      run: |
+#        kubectl apply -f k8s/configmap.yaml
+#        kubectl apply -f k8s/secret.yaml
+#        kubectl create configmap create-db-configmap --from-file=k8s/create_db.js -n productcatalog
+#        kubectl apply -f kubernetes/mongo.yaml
+#        kubectl apply -f kubernetes/deployment.yaml
+
+#    - name: Get Pods
+#      run: kubectl get pods -n productcatalog
