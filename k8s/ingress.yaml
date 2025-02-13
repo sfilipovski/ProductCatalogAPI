@@ -3,10 +3,13 @@ kind: Ingress
 metadata:
   name: productcatalog-ingress
   namespace: productcatalog
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: productcatalog.com
-    http: 
+  - http: 
       paths:
       - path: /
         pathType: Prefix
