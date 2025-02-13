@@ -94,8 +94,8 @@ jobs:
       - name: Add Deployment Status to Summary
         id: deployment-status
         run: |
-          # Check the status of the deployment
-          kubectl rollout status deployment/productcatalog-deployment -n productcatalog
+          kubectl rollout status deployment/deployment -n productcatalog
+          kubectl rollout status deployment/mongo -n productcatalog
 
           echo "### AKS Deployment Status" >> $GITHUB_STEP_SUMMARY
           echo "The deployment to AKS was **successful**." >> $GITHUB_STEP_SUMMARY
